@@ -9,6 +9,7 @@ import { cocktailRouter } from './controller/cocktail.routes';
 import { ingredientRouter } from './controller/ingredient.routes';
 import { cocktailIngredientRouter } from './controller/cocktailIngredient.routes';
 import { expressjwt } from 'express-jwt';
+import helmet from 'helmet';
 
 dotenv.config();
 const app = express();
@@ -16,6 +17,7 @@ const port = process.env.APP_PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(helmet());
 app.use(
     expressjwt({
         secret: process.env.JWT_SECRET || 'default_secret',
