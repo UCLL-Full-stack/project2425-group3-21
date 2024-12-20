@@ -2,7 +2,6 @@
 # Sip Happens Online
 
 ## Description: 
-Sip Happens Online is a web application that allows users to sign up and log in to add and view their favourite cocktail drinks, there will be a central list containing all cocktails with a counter to reflect how many users favorited the drink. Cocktails will have ingredients and users can filter for cocktails based on ingredient selection.
-
+Sip Happens Online is a web application that allows users to sign up and log in to add and view their cocktail drinks, there will be a central list containing all cocktails. Cocktails will have an ingredients section.
 
 ### \<Vincent Vanbrabant\> / \<Wood De Bock\>
