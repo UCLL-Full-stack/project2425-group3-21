@@ -41,11 +41,30 @@ const RegisterForm: React.FC<Props> = ({ onSubmit }) => {
           const userPayload = await response.json();
           const userthing = userPayload.response;
 
-          sessionStorage.setItem("loggedInUser", JSON.stringify({
-            token: userthing.token,
-            role: userthing.role,
-            userId: userthing.userId,
-          }));
+          try {
+            const user = { email, password };
+            const response = await UserService.loginUser(user);
+        
+            if (response.status === 200) {
+              const userPayload = await response.json();
+              const userthing = userPayload.response;
+        
+        
+              console.log("User logged in:", userPayload);
+              sessionStorage.setItem("loggedInUser", JSON.stringify({
+                token: userthing.token,
+                role: userthing.role,
+                userId: userthing.userId,
+              }));
+        
+              setTimeout(() => {
+                router.push("/");
+              }, 2000);
+            } else {
+            }
+          } catch (error) {
+            console.error("Login error:", error);
+          }
 
 
           setTimeout(() => {
@@ -86,7 +105,7 @@ const RegisterForm: React.FC<Props> = ({ onSubmit }) => {
       </div>
       <div>
         <label>{t('register.label.role')}</label>
-        <input classname="form-input" type="text" value={role} onChange={(e) => setRole(e.target.value)} />
+        <input className="form-input" type="text" value={role} onChange={(e) => setRole(e.target.value)} />
         {errors.role && <p className="error-text">{errors.role}</p>}
       </div>
       <br />
