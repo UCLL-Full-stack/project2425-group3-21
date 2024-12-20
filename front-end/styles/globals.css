@@ -225,6 +225,11 @@ label {
   font-size: 0.9em;
 }
 
+.success-text {
+  color: #4caf50;
+  font-size: 0.9em;
+}
+
 .btn-primary {
   display: block;
   width: 100%;
@@ -395,6 +400,11 @@ body {
 
 .error-text {
   color: #ff4d4d;
+  font-size: 12px;
+}
+
+.success-text {
+  color: #4caf50;
   font-size: 12px;
 }
 
