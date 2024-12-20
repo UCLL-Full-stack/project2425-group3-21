@@ -25,7 +25,7 @@ const UserLoginForm: React.FC = () => {
     let result = true;
 
     if (!email || email.trim() === "") {
-      setEmailError(t('login.email'));
+      setEmailError(t('login.emailRequired'));
       result = false;
     }
 
@@ -74,7 +74,6 @@ const UserLoginForm: React.FC = () => {
       setStatusMessages([{ message: t('login.error'), type: "error" }]);
     }
   };
-  
 
   return (
     <>
@@ -108,7 +107,7 @@ const UserLoginForm: React.FC = () => {
             onChange={(event) => setEmail(event.target.value)}
             className="border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue:500 block w-full p-2.5"
           />
-          {emailError && <div className="text-red-800 ">{emailError}</div>}
+          {emailError && <div className="error-text">{emailError}</div>}
         </div>
         <div className="mb-4">
           <div>

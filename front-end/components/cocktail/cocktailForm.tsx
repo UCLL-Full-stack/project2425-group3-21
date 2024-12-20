@@ -1,66 +1,136 @@
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { useState, useEffect } from "react";
+import { useTranslation } from "next-i18next";
+import classNames from "classnames";
 
-type Props = {
+interface CocktailFormProps {
   initialData?: {
     name: string;
     description: string;
     strongness: number;
     image: string;
   };
-  onSubmit: (data: any) => void;
+  onSubmit: (formData: any) => void;
   submitButtonText: string;
-};
+}
 
-const CocktailForm: React.FC<Props> = ({ initialData, onSubmit, submitButtonText }) => {
+const CocktailForm: React.FC<CocktailFormProps> = ({ initialData, onSubmit, submitButtonText }) => {
   const { t } = useTranslation();
-  const [name, setName] = useState(initialData?.name || '');
-  const [description, setDescription] = useState(initialData?.description || '');
-  const [strongness, setStrongness] = useState(initialData?.strongness || 0);
-  const [image, setImage] = useState(initialData?.image || '');
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [formData, setFormData] = useState({
+    name: initialData?.name || "",
+    description: initialData?.description || "",
+    strongness: initialData?.strongness || 0,
+    image: initialData?.image || "/placeholder.png",
+  });
+  const [nameError, setNameError] = useState<string | null>(null);
+  const [descriptionError, setDescriptionError] = useState<string | null>(null);
+  const [strongnessError, setStrongnessError] = useState<string | null>(null);
+  const [statusMessages, setStatusMessages] = useState<{ message: string; type: string }[]>([]);
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
+  const clearErrors = () => {
+    setNameError(null);
+    setDescriptionError(null);
+    setStrongnessError(null);
+    setStatusMessages([]);
+  };
+  const validate = (): boolean => {
+    let result = true;
+    if (!formData.name || formData.name.trim() === "") {
+      setNameError(t("addCocktail.nameRequired"));
+      result = false;
+    }
 
-  const validate = () => {
-    const newErrors: { [key: string]: string } = {};
-    if (!name.trim()) newErrors.name = t('addCocktail.nameRequired');
-    if (!description.trim()) newErrors.description = t('addCocktail.descriptionRequired');
-    if (strongness === undefined || strongness === null) newErrors.strongness = t('addCocktail.strongnessRequired');
-    if (!image.trim()) newErrors.image = t('addCocktail.imageRequired');
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    if (!formData.description || formData.description.trim() === "") {
+      setDescriptionError(t("addCocktail.descriptionRequired"));
+      result = false;
+    }
+    if (formData.strongness < 0 || formData.strongness > 5) {
+      setStrongnessError(t("addCocktail.strongnessRange"));
+      result = false;
+    }
+    if (formData.strongness === null || formData.strongness === undefined || isNaN(formData.strongness)) {
+      setStrongnessError(t("addCocktail.strongnessRequired"));
+      result = false;
+    }
+    return result;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (validate()) {
-      onSubmit({ name, description, strongness, image });
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    clearErrors();
+    if (!validate()) {
+      return;
     }
+    onSubmit(formData);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>{t('addCocktail.name')}</label>
-        <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
-        {errors.name && <p className="error">{errors.name}</p>}
-      </div>
-      <div>
-        <label>{t('addCocktail.description')}</label>
-        <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
-        {errors.description && <p className="error">{errors.description}</p>}
-      </div>
-      <div>
-        <label>{t('addCocktail.strongness')}</label>
-        <input type="number" value={strongness} onChange={(e) => setStrongness(Number(e.target.value))} />
-        {errors.strongness && <p className="error">{errors.strongness}</p>}
-      </div>
-      <div>
-        <label>{t('addCocktail.image')}</label>
-        <input type="text" value={image} onChange={(e) => setImage(e.target.value)} />
-        {errors.image && <p className="error">{errors.image}</p>}
-      </div>
-      <button type="submit">{submitButtonText}</button>
-    </form>
+    <>
+      <h3 className="px-0">{t("addCocktail.title")}</h3>
+      {statusMessages && (
+        <div className="row">
+          <ul className="list-none mb-3 mx-auto">
+            {statusMessages.map(({ message, type }, index) => (
+              <li
+                key={index}
+                className={classNames({
+                  "text-red-800": type === "error",
+                  "text-green-800": type === "success",
+                })}
+              >
+                {message}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="nameInput" className="mb-4">
+          {t("addCocktail.name")}
+        </label>
+        <div className="block mb-2 text-sm font-medium">
+          <input
+            id="nameInput"
+            type="text"
+            value={formData.name}
+            onChange={(event) => setFormData({ ...formData, name: event.target.value })}
+            className="form-input"
+          />
+          {nameError && <div className="error-text">{nameError}</div>}
+        </div>
+        <label htmlFor="descriptionInput" className="mb-4">
+          {t("addCocktail.description")}
+        </label>
+        <div className="block mb-2 text-sm font-medium">
+          <textarea
+            id="descriptionInput"
+            value={formData.description}
+            onChange={(event) => setFormData({ ...formData, description: event.target.value })}
+            className="form-input"
+          />
+          {descriptionError && <div className="error-text">{descriptionError}</div>}
+        </div>
+        <label htmlFor="strongnessInput" className="mb-4">
+          {t("addCocktail.strongness")}
+        </label>
+        <div className="block mb-2 text-sm font-medium">
+          <input
+            id="strongnessInput"
+            type="number"
+            value={formData.strongness}
+            onChange={(event) => setFormData({ ...formData, strongness: parseInt(event.target.value) })}
+            className="form-input"
+          />
+          {strongnessError && <div className="error-text">{strongnessError}</div>}
+        </div>
+        <button className="btn-primary" type="submit">
+          {submitButtonText}
+        </button>
+      </form>
+    </>
   );
 };
 

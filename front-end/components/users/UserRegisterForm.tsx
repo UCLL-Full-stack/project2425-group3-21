@@ -72,25 +72,26 @@ const RegisterForm: React.FC<Props> = ({ onSubmit }) => {
       <div>
         <label>{t('register.label.name')}</label>
         <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
-        {errors.name && <p className="error">{errors.name}</p>}
+        {errors.name && <p className="error-text">{errors.name}</p>}
       </div>
       <div>
         <label>{t('register.label.email')}</label>
         <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        {errors.email && <p className="error">{errors.email}</p>}
+        {errors.email && <p className="error-text">{errors.email}</p>}
       </div>
       <div>
         <label>{t('register.label.password')}</label>
         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        {errors.password && <p className="error">{errors.password}</p>}
+        {errors.password && <p className="error-text">{errors.password}</p>}
       </div>
       <div>
         <label>{t('register.label.role')}</label>
-        <input type="text" value={role} onChange={(e) => setRole(e.target.value)} />
-        {errors.role && <p className="error">{errors.role}</p>}
+        <input classname="form-input" type="text" value={role} onChange={(e) => setRole(e.target.value)} />
+        {errors.role && <p className="error-text">{errors.role}</p>}
       </div>
-      {errors.form && <p className="error">{errors.form}</p>}
-      <button type="submit">{t('register.button')}</button>
+      <br />
+      {errors.form && <p className="error-text">{errors.form}</p>}
+      <button className="btn-primary" type="submit">{t('register.button')}</button>
     </form>
   );
 };
